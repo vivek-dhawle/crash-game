@@ -1,4 +1,4 @@
-import { Container, Graphics, Text, BlurFilter } from 'pixi.js';
+import { Container, Graphics, Text, BlurFilter } from "pixi.js";
 
 export class MultiplierDisplay {
   public view = new Container();
@@ -7,8 +7,8 @@ export class MultiplierDisplay {
   private glow: Graphics;
   private multiplierText: Text;
 
-  private boxWidth = 240;
-  private boxHeight = 90;
+  private boxWidth = 200;
+  private boxHeight = 60;
 
   private isCrashed = false;
 
@@ -20,11 +20,11 @@ export class MultiplierDisplay {
     this.glow = new Graphics();
 
     this.multiplierText = new Text({
-      text: '1.00x',
+      text: "1.00x",
       style: {
         fill: 0x22d3ee,
-        fontSize: 48,
-        fontWeight: 'bold',
+        fontSize: 38,
+        fontWeight: "bold",
       },
     });
 
@@ -41,14 +41,18 @@ export class MultiplierDisplay {
   // =============================
   private draw(borderColor: number) {
     this.glow.clear();
-    this.glow.roundRect(0, 0, this.boxWidth, this.boxHeight, 18).stroke({ width: 4, color: borderColor });
+    this.glow
+      .roundRect(0, 0, this.boxWidth, this.boxHeight, 18)
+      .stroke({ width: 4, color: borderColor });
 
     const blur = new BlurFilter();
     blur.blur = 6;
     this.glow.filters = [blur];
 
     this.bg.clear();
-    this.bg.roundRect(0, 0, this.boxWidth, this.boxHeight, 18).fill({ color: 0x0f172a, alpha: 0.95 });
+    this.bg
+      .roundRect(0, 0, this.boxWidth, this.boxHeight, 18)
+      .fill({ color: 0x0f172a, alpha: 0.95 });
 
     this.multiplierText.x = this.boxWidth / 2;
     this.multiplierText.y = this.boxHeight / 2;
@@ -76,7 +80,6 @@ export class MultiplierDisplay {
   // =============================
   crash(crashRate: number) {
     this.isCrashed = true;
-
     this.multiplierText.text = `${crashRate.toFixed(2)}x`;
     this.multiplierText.style.fill = 0xef4444; // red text
 
@@ -116,6 +119,6 @@ export class MultiplierDisplay {
 
   resize(width: number, height: number) {
     this.view.x = width / 2 - this.boxWidth / 2;
-    this.view.y = height / 4 - 30;
+    this.view.y = height / 10;
   }
 }

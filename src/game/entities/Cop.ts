@@ -1,5 +1,5 @@
-import { Container } from 'pixi.js';
-import { Spine } from '@esotericsoftware/spine-pixi-v8';
+import { Container } from "pixi.js";
+import { Spine } from "@esotericsoftware/spine-pixi-v8";
 
 export class Cop {
   public view = new Container();
@@ -7,8 +7,8 @@ export class Cop {
 
   constructor() {
     this.spine = Spine.from({
-      skeleton: 'copSkeleton',
-      atlas: 'copAtlas',
+      skeleton: "copSkeleton",
+      atlas: "copAtlas",
     });
 
     this.spine.state.data.defaultMix = 0.15;
@@ -16,8 +16,12 @@ export class Cop {
     this.view.addChild(this.spine);
   }
 
+  idle() {
+    this.spine.state.setAnimation(0, "Cops-Idel", true);
+  }
+
   run() {
-    this.spine.state.setAnimation(0, 'Run-Cycle', true);
+    this.spine.state.setAnimation(0, "Run-Cycle", true);
   }
 
   stop() {
@@ -26,6 +30,6 @@ export class Cop {
 
   setSpeed(multiplier: number) {
     // Dynamic tension effect
-    this.spine.state.timeScale = 1 + multiplier * 0.3;
+    this.spine.state.timeScale = Math.min(2, 0.9 + multiplier * 0.05);
   }
 }

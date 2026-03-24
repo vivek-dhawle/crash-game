@@ -1,8 +1,8 @@
-import { GameApp } from './GameApp';
-import { ApiClient } from '../network/api/ApiClient';
-import { SocketClient } from '../network/socket/SocketClient';
-import { BetPanelController } from '../game/ui/BetPanelController';
-import { GameState } from '../game/state/GameState';
+import { GameApp } from "./GameApp";
+import { ApiClient } from "../network/api/ApiClient";
+import { SocketClient } from "../network/socket/SocketClient";
+import { BetPanelController } from "../game/ui/BetPanelController";
+import { GameState } from "../game/state/GameState";
 
 export class GameBootstrap {
   async start() {
@@ -28,6 +28,6 @@ export class GameBootstrap {
 
   private getTokenFromUrl(): string | null {
     const params = new URLSearchParams(window.location.search);
-    return params.get('token');
+    return params.get("token");
   }
 }

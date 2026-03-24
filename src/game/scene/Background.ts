@@ -1,4 +1,7 @@
-import { Container, Sprite, Texture, TilingSprite, BlurFilter } from 'pixi.js';
+import { Spine } from "@esotericsoftware/spine-pixi-v8";
+import { Container, Sprite, Texture, TilingSprite, BlurFilter } from "pixi.js";
+import type { Thief } from "../entities/Thief";
+import type { CopThief } from "../entities/CopTthief";
 
 export class Background {
   public view: Container;
@@ -10,32 +13,60 @@ export class Background {
   private city!: TilingSprite;
   private mainCity!: TilingSprite;
   private bridge!: TilingSprite;
+  private obs1!: Sprite;
+  private obs2!: Sprite;
+  public Obstacle!: Sprite[];
+  private ObstacleSprite!: Texture[];
+  public added = false;
+
+  public dust!: Spine;
 
   private speed = 0;
 
   constructor(width: number, height: number) {
     this.view = new Container();
     this.backgroundContainer = new Container();
+    this.Obstacle = [];
 
     this.create(width, height);
   }
 
   private create(width: number, height: number) {
     // SKY
-    this.sky = Sprite.from('sky');
+    this.sky = Sprite.from("sky");
     this.sky.width = width;
     this.sky.height = height;
 
     // MOON
-    this.moon = Sprite.from('moon');
+    this.moon = Sprite.from("moon");
     this.moon.anchor.set(0.5);
     this.moon.scale.set(0.7);
     this.moon.position.set(width - 500, height * 0.15);
 
     // TEXTURES
-    const cityTexture = Texture.from('cityShilout');
-    const mainCityTexture = Texture.from('mainCity');
-    const bridgeTexture = Texture.from('bridge');
+    const cityTexture = Texture.from("cityShilout");
+    const mainCityTexture = Texture.from("mainCity");
+    const bridgeTexture = Texture.from("bridge");
+    this.ObstacleSprite = [
+      Texture.from("obs3"),
+      Texture.from("obs5"),
+      Texture.from("obs6"),
+    ];
+
+    this.dust = Spine.from({
+      skeleton: "dustSkeleton",
+      atlas: "dustAtlas",
+    });
+    this.dust.label = "dust";
+    this.dust.x = width;
+    this.dust.y = height;
+    this.dust.zIndex = 101;
+    this.dust.visible = false;
+
+    // this.obs1.anchor.set(0.5);
+    // this.obs1.scale.set(0.7);
+    // this.obs2.anchor.set(0.5);
+    // this.obs2.scale.set(0.7);
 
     this.city = new TilingSprite({
       texture: cityTexture,
@@ -59,7 +90,12 @@ export class Background {
     this.bridge.y = height - bridgeTexture.height;
 
     // Add background layers into container
-    this.backgroundContainer.addChild(this.sky, this.moon, this.city, this.mainCity);
+    this.backgroundContainer.addChild(
+      this.sky,
+      this.moon,
+      this.city,
+      this.mainCity,
+    );
 
     // Apply blur ONLY to background container
     const blur = new BlurFilter();
@@ -84,6 +120,77 @@ export class Background {
 
   public setSpeed(value: number) {
     this.speed = value;
+  }
+
+  public addObstacles(width: number, height: number, collision) {
+    const last = this.Obstacle[this.Obstacle.length - 1];
+    const yLocation = [320, 380];
+
+    if (last && last.y == 380 && last.x > width - 300) return;
+    const index = Math.floor(Math.random() * this.ObstacleSprite.length);
+    const obs = Sprite.from(this.ObstacleSprite[index]);
+    if (index == 9) {
+      obs.scale.set(0.3);
+    } else {
+      obs.scale.set(0.3);
+    }
+    obs.anchor.set(0, 1);
+    obs.label = "obs";
+
+    obs.y = yLocation[Math.floor(Math.random() * this.ObstacleSprite.length)];
+    obs.x = width + 150;
+    if (collision) obs.y = 380;
+
+    this.view.addChild(obs);
+
+    this.Obstacle.push(obs);
+  }
+
+  public moveObstacles(
+    speed: number,
+    thief: Thief,
+    copTheif: CopThief,
+    isJumping,
+    state,
+    container: Container,
+    onComplete: Function,
+  ) {
+    this.Obstacle.forEach((obs) => {
+      obs.x -= speed;
+      const dist = state.status === "RUNNING" ? 60 + speed * 10 : 20;
+
+      if (
+        obs.y >= 370 &&
+        !isJumping.value &&
+        obs.x - thief.view.x < dist &&
+        obs.x - thief.view.x > 1
+      ) {
+        if (state.status === "RUNNING") {
+          thief.jump(speed, isJumping);
+          isJumping.value = true;
+        } else {
+          if (!container.getChildByLabel("copTheif")) {
+            container.removeChild(thief.view);
+            container.addChild(copTheif.view);
+            const entry = copTheif.dive();
+            entry.listener = {
+              complete: () => {
+                if (!this.added && state.status === "CRASHED") {
+                  this.dust.visible = true;
+                  this.dust.state.setAnimation(0, "animation", false);
+                  this.added = true;
+                  onComplete();
+                  setTimeout(() => {
+                    copTheif.catch();
+                  }, 300);
+                }
+              },
+            };
+            copTheif.view.x = thief.view.x;
+          }
+        }
+      }
+    });
   }
 
   public resize(width: number, height: number) {

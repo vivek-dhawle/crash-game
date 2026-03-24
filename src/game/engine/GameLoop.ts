@@ -1,11 +1,18 @@
-import { Application } from 'pixi.js';
+import { Application } from "pixi.js";
 
 export class GameLoop {
-  constructor(private app: Application) {}
+  private play = true;
+  constructor(private app: Application) {
+    window.addEventListener("keydown", (e) => {
+      if (e.code == "Space") this.play = !this.play;
+    });
+  }
 
   start(update: (delta: number) => void) {
     this.app.ticker.add(() => {
-      update(this.app.ticker.deltaTime);
+      if (this.play) {
+        update(this.app.ticker.deltaTime);
+      }
     });
   }
 }

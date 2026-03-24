@@ -1,7 +1,7 @@
 export interface RoundStartedPayload {
   id: string;
   roundId: string;
-  roundState: '1';
+  roundState: "1";
 }
 
 export interface WaitingTimerPayload {
@@ -15,7 +15,7 @@ export interface WaitingTimerPayload {
 export interface RoundBettingOnHoldPayload {
   id: string;
   roundId: string;
-  roundState: '2';
+  roundState: "2";
   onHoldAt: string;
   roundSignature: string;
 }
@@ -32,7 +32,7 @@ export interface RoundStoppedPayload {
   id: string;
   roundId: string;
   crashRate: number;
-  roundState: '0';
+  roundState: "0";
   roundHash: string;
   roundSignature: string;
   currentGameSettings: string;

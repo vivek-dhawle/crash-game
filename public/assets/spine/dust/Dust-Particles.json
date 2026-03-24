@@ -1,0 +1,272 @@
+{
+    "skeleton": {
+        "hash": "KuA02rvLk/Q",
+        "spine": "4.2.43",
+        "x": -960,
+        "y": 4.69,
+        "width": 1920,
+        "height": 1080,
+        "images": "./Images/Dust/",
+        "audio": "./audio"
+    },
+    "bones": [
+        {
+            "name": "root"
+        },
+        {
+            "name": "Dust_0",
+            "parent": "root",
+            "x": -47.37,
+            "y": 44.8
+        },
+        {
+            "name": "Punch",
+            "parent": "root",
+            "x": -158.51,
+            "y": 332.52
+        },
+        {
+            "name": "Punch_02",
+            "parent": "root",
+            "x": 140.77,
+            "y": 600.97
+        },
+        {
+            "name": "Punch_03",
+            "parent": "root",
+            "x": -445.83,
+            "y": 535.79
+        }
+    ],
+    "slots": [
+        {
+            "name": "Dust_0",
+            "bone": "Dust_0",
+            "attachment": "Dust_"
+        },
+        {
+            "name": "Punch",
+            "bone": "Punch",
+            "attachment": "Punch"
+        },
+        {
+            "name": "Punch_02",
+            "bone": "Punch_02",
+            "attachment": "Punch_02"
+        },
+        {
+            "name": "Punch_03",
+            "bone": "Punch_03",
+            "attachment": "Punch_03"
+        }
+    ],
+    "skins": [
+        {
+            "name": "default",
+            "attachments": {
+                "Dust_0": {
+                    "Dust_": {
+                        "x": 47.37,
+                        "y": 499.89,
+                        "width": 1920,
+                        "height": 1080,
+                        "sequence": {
+                            "count": 60,
+                            "start": 0,
+                            "digits": 1
+                        }
+                    }
+                },
+                "Punch": {
+                    "Punch": {
+                        "x": 10.8,
+                        "y": -5.65,
+                        "width": 439,
+                        "height": 297
+                    }
+                },
+                "Punch_02": {
+                    "Punch_02": {
+                        "x": -2.83,
+                        "y": 8.5,
+                        "width": 439,
+                        "height": 297
+                    }
+                },
+                "Punch_03": {
+                    "Punch_03": {
+                        "x": -14.17,
+                        "y": 8.5,
+                        "width": 439,
+                        "height": 297
+                    }
+                }
+            }
+        }
+    ],
+    "animations": {
+        "animation": {
+            "bones": {
+                "Dust_0": {
+                    "scale": [
+                        {
+                            "x": 0,
+                            "y": 0,
+                            "curve": "stepped"
+                        },
+                        {
+                            "time": 0.1333,
+                            "x": 0,
+                            "y": 0
+                        },
+                        {
+                            "time": 0.2
+                        }
+                    ]
+                },
+                "Punch": {
+                    "scale": [
+                        {
+                            "x": 0,
+                            "y": 0,
+                            "curve": "stepped"
+                        },
+                        {
+                            "time": 0.5333,
+                            "x": 0,
+                            "y": 0
+                        },
+                        {
+                            "time": 0.6
+                        },
+                        {
+                            "time": 0.6667,
+                            "x": 0,
+                            "y": 0,
+                            "curve": "stepped"
+                        },
+                        {
+                            "time": 0.8333,
+                            "x": 0,
+                            "y": 0
+                        },
+                        {
+                            "time": 0.9
+                        },
+                        {
+                            "time": 0.9667,
+                            "x": 0,
+                            "y": 0,
+                            "curve": "stepped"
+                        },
+                        {
+                            "time": 1.1333,
+                            "x": 0,
+                            "y": 0
+                        },
+                        {
+                            "time": 1.2
+                        },
+                        {
+                            "time": 1.2667,
+                            "x": 0,
+                            "y": 0
+                        }
+                    ]
+                },
+                "Punch_02": {
+                    "scale": [
+                        {
+                            "x": 0,
+                            "y": 0,
+                            "curve": "stepped"
+                        },
+                        {
+                            "time": 0.6,
+                            "x": 0,
+                            "y": 0
+                        },
+                        {
+                            "time": 0.6667
+                        },
+                        {
+                            "time": 0.7333,
+                            "x": 0,
+                            "y": 0,
+                            "curve": "stepped"
+                        },
+                        {
+                            "time": 1,
+                            "x": 0,
+                            "y": 0
+                        },
+                        {
+                            "time": 1.0667
+                        },
+                        {
+                            "time": 1.1333,
+                            "x": 0,
+                            "y": 0
+                        }
+                    ]
+                },
+                "Punch_03": {
+                    "scale": [
+                        {
+                            "x": 0,
+                            "y": 0,
+                            "curve": "stepped"
+                        },
+                        {
+                            "time": 0.4333,
+                            "x": 0,
+                            "y": 0
+                        },
+                        {
+                            "time": 0.4667
+                        },
+                        {
+                            "time": 0.5333,
+                            "x": 0,
+                            "y": 0,
+                            "curve": "stepped"
+                        },
+                        {
+                            "time": 0.7667,
+                            "x": 0,
+                            "y": 0
+                        },
+                        {
+                            "time": 0.8
+                        },
+                        {
+                            "time": 0.8667,
+                            "x": 0,
+                            "y": 0
+                        }
+                    ]
+                }
+            },
+            "attachments": {
+                "default": {
+                    "Dust_0": {
+                        "Dust_": {
+                            "sequence": [
+                                {
+                                    "time": 0.2,
+                                    "mode": "loop",
+                                    "delay": 0.0333
+                                },
+                                {
+                                    "time": 2.1667,
+                                    "mode": "loop",
+                                    "index": 59
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

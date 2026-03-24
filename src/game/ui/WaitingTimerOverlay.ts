@@ -1,13 +1,13 @@
-import { Container, Graphics, Text } from 'pixi.js';
+import { Container, Graphics, Text } from "pixi.js";
 
 export class WaitingTimerOverlay {
   public view = new Container();
 
   private circle: Graphics;
-  private secondsText: Text;
+  public secondsText: Text;
   private labelText: Text;
 
-  private radius = 100;
+  private radius = 80;
 
   constructor(
     private screenWidth: number,
@@ -15,16 +15,16 @@ export class WaitingTimerOverlay {
   ) {
     this.circle = new Graphics();
     this.secondsText = new Text({
-      text: '0',
+      text: "0",
       style: {
         fill: 0xffffff,
         fontSize: 60,
-        fontWeight: 'bold',
+        fontWeight: "bold",
       },
     });
 
     this.labelText = new Text({
-      text: 'NEXT ROUND',
+      text: "NEXT ROUND",
       style: {
         fill: 0x94a3b8,
         fontSize: 16,
@@ -72,7 +72,7 @@ export class WaitingTimerOverlay {
     this.screenHeight = height;
 
     this.view.x = width / 2;
-    this.view.y = height / 3;
+    this.view.y = height / 5;
 
     this.drawCircle();
 
