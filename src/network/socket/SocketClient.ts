@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { io, Socket } from "socket.io-client";
 
-type Listener = (data: any) => void;
+type Listener = (data: unknown) => void;
 
 export class SocketClient {
   private socket!: Socket;
@@ -10,11 +9,9 @@ export class SocketClient {
   constructor(private token: string | null) {}
 
   async connect() {
-    const TIG_GAME_ENGINE_URL = "http://14.96.243.218:8007";
-    const LOCAL_ENGINE_URL = "http://localhost:8080";
-    const GRAIL_BET_URL = "https://cron-dev.grailbet.com";
+    const env_url = import.meta.env.VITE_SOCKET_URL;
 
-    this.socket = io(`${GRAIL_BET_URL}/crash-game`, {
+    this.socket = io(`${env_url}/crash-game`, {
       path: "/api/socket",
       transports: ["websocket"],
       auth: { token: this.token },
@@ -28,12 +25,13 @@ export class SocketClient {
       console.warn("Socket disconnected:", reason);
     });
 
-    this.socket.on("connect_error", (err) => {
-      console.error("Socket error:", err);
+    this.socket.on("connect_error", (err: Error) => {
+      console.error("Socket error:", err.message);
     });
 
     this.socket.onAny((event, data) => {
-      this.emit(event, data?.data ?? data);
+      const payload = (data as { data?: unknown })?.data ?? data;
+      this.emit(event, payload);
     });
   }
 
@@ -44,7 +42,11 @@ export class SocketClient {
     this.listeners[event].push(callback);
   }
 
-  private emit(event: string, data: any) {
+  private emit(event: string, data: unknown) {
     this.listeners[event]?.forEach((cb) => cb(data));
+  }
+
+  disconnect() {
+    this.socket?.disconnect();
   }
 }

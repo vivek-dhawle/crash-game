@@ -1,4 +1,4 @@
-import { Container, Graphics, Text, TextStyle } from "pixi.js";
+import { Container, Graphics, Text } from "pixi.js";
 
 export class BetPanel {
   public view = new Container();
@@ -28,9 +28,9 @@ export class BetPanel {
   private readonly colorInput = 0x1f2937; // Input bg
 
   constructor(
-    private screenWidth: number,
-    private screenHeight: number,
     private onPlaceBet: (amount: number) => void,
+    screenWidth: number,
+    screenHeight: number,
   ) {
     this.bg = new Graphics();
     this.view.addChild(this.bg);
@@ -221,9 +221,6 @@ export class BetPanel {
   }
 
   resize(width: number, height: number) {
-    this.screenWidth = width;
-    this.screenHeight = height;
-
     const panelHeight = 130;
     const panelY = height - panelHeight;
 

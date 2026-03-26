@@ -112,7 +112,9 @@ export class BetPanelController {
     try {
       await this.api.placeBet(amount, auto);
       this.betState = BetState.ACTIVE;
-    } catch {}
+    } catch {
+      //do nothing
+    }
 
     this.render();
   }
@@ -123,7 +125,9 @@ export class BetPanelController {
     try {
       await this.api.cancelBet();
       this.betState = BetState.IDLE;
-    } catch {}
+    } catch {
+      //do nothing
+    }
 
     this.render();
   }
@@ -148,7 +152,9 @@ export class BetPanelController {
     try {
       await this.api.cashOut();
       this.betState = BetState.CASHED_OUT;
-    } catch {}
+    } catch {
+      //do nothing
+    }
 
     this.render();
   }

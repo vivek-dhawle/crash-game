@@ -1,13 +1,20 @@
-import { SkeletonBinary, AtlasAttachmentLoader } from '@esotericsoftware/spine-pixi-v8';
-import { Assets } from 'pixi.js';
+import {
+  SkeletonBinary,
+  AtlasAttachmentLoader,
+} from "@esotericsoftware/spine-pixi-v8";
+import { Assets } from "pixi.js";
 
-export async function downloadJsonFromSkel(skelAlias: any, atlasAlias: any, outputName: any) {
+export async function downloadJsonFromSkel(
+  skelAlias: unknown,
+  atlasAlias: unknown,
+  outputName: unknown,
+) {
   // 1. Get the raw assets
-  const rawBuffer = Assets.get(skelAlias);
-  const atlas = Assets.get(atlasAlias);
+  const rawBuffer = Assets.get(skelAlias as string);
+  const atlas = Assets.get(atlasAlias as string);
 
   if (!rawBuffer || !atlas) {
-    console.error('Assets not loaded yet!');
+    console.error("Assets not loaded yet!");
     return;
   }
 
@@ -43,16 +50,16 @@ export async function downloadJsonFromSkel(skelAlias: any, atlasAlias: any, outp
 
   // 4. Create the JSON file and trigger download
   const jsonString = JSON.stringify(cleanData, null, 2);
-  const blob = new Blob([jsonString], { type: 'application/json' });
+  const blob = new Blob([jsonString], { type: "application/json" });
   const url = URL.createObjectURL(blob);
 
-  const link = document.createElement('a');
+  const link = document.createElement("a");
   link.href = url;
-  link.download = outputName || 'converted-skeleton.json';
+  link.download = (outputName as string) || "converted-skeleton.json";
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
-  console.log('Downloaded:', link.download);
+  console.log("Downloaded:", link.download);
 }
 
 // RUN IT:

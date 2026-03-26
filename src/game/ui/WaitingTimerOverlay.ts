@@ -8,11 +8,7 @@ export class WaitingTimerOverlay {
   private labelText: Text;
 
   private radius = 80;
-
-  constructor(
-    private screenWidth: number,
-    private screenHeight: number,
-  ) {
+  constructor(screenWidth: number, screenHeight: number) {
     this.circle = new Graphics();
     this.secondsText = new Text({
       text: "0",
@@ -68,9 +64,6 @@ export class WaitingTimerOverlay {
   }
 
   resize(width: number, height: number) {
-    this.screenWidth = width;
-    this.screenHeight = height;
-
     this.view.x = width / 2;
     this.view.y = height / 5;
 

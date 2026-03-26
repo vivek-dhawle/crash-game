@@ -45,10 +45,12 @@ export class Thief {
     const entry = this.spine.state.setAnimation(0, "Joker-Jump", false);
 
     // ⏩ skip beginning (first 20%)
-   entry.animationStart = entry.animation.duration * 0.3;
-
-    // ✂️ cut ending (last 30%)
-    entry.animationEnd = entry.animation.duration * 0.7;
+    if (entry.animation) {
+      entry.animationStart = entry.animation.duration * 0.3;
+      entry.animationEnd = entry.animation.duration * 0.7;
+    } else {
+      console.warn("Animation not found!");
+    }
 
     // control speed
     this.spine.state.timeScale = Math.min(1.5, 0.8 + speed * 0.03);

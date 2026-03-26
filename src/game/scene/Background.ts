@@ -2,6 +2,7 @@ import { Spine } from "@esotericsoftware/spine-pixi-v8";
 import { Container, Sprite, Texture, TilingSprite, BlurFilter } from "pixi.js";
 import type { Thief } from "../entities/Thief";
 import type { CopThief } from "../entities/CopTthief";
+import { GameState } from "../state/GameState";
 
 export class Background {
   public view: Container;
@@ -13,8 +14,6 @@ export class Background {
   private city!: TilingSprite;
   private mainCity!: TilingSprite;
   private bridge!: TilingSprite;
-  private obs1!: Sprite;
-  private obs2!: Sprite;
   public Obstacle!: Sprite[];
   private ObstacleSprite!: Texture[];
   public added = false;
@@ -122,7 +121,7 @@ export class Background {
     this.speed = value;
   }
 
-  public addObstacles(width: number, height: number, collision) {
+  public addObstacles(width: number, collision: boolean) {
     const last = this.Obstacle[this.Obstacle.length - 1];
     const yLocation = [320, 380];
 
@@ -150,10 +149,10 @@ export class Background {
     speed: number,
     thief: Thief,
     copTheif: CopThief,
-    isJumping,
-    state,
+    isJumping: { value: boolean },
+    state: GameState,
     container: Container,
-    onComplete: Function,
+    onComplete: () => void,
   ) {
     this.Obstacle.forEach((obs) => {
       obs.x -= speed;
@@ -163,7 +162,7 @@ export class Background {
         obs.y >= 370 &&
         !isJumping.value &&
         obs.x - thief.view.x < dist &&
-        obs.x - thief.view.x > 1
+        obs.x - thief.view.x > 0.1
       ) {
         if (state.status === "RUNNING") {
           thief.jump(speed, isJumping);

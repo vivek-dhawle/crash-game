@@ -16,9 +16,9 @@ export class ThiefCrashGame {
   private loop!: GameLoop;
   private waitingTimer!: WaitingTimerOverlay;
   private multiplierDisplay!: MultiplierDisplay;
-  private speed!: number = 0.28;
-  private isJumping: any;
-  private isCrash: any;
+  private speed: number = 0.28;
+  private isJumping: { value: boolean };
+  private isCrash: { value: boolean };
   private play: boolean = true;
   constructor(
     private app: Application,
@@ -110,12 +110,14 @@ export class ThiefCrashGame {
       this.cop.view.x -= 500;
     });
 
-    this.state.on("waiting", (seconds: number) => {
+    this.state.on("waiting", (seconds: number | undefined) => {
       this.waitingTimer.show();
-      this.waitingTimer.update(seconds);
-      if (seconds == 5) {
-        this.thief.run();
-        this.cop.run();
+      if (seconds !== undefined) {
+        this.waitingTimer.update(seconds);
+        if (seconds == 5) {
+          this.thief.run();
+          this.cop.run();
+        }
       }
     });
 
@@ -138,22 +140,14 @@ export class ThiefCrashGame {
       const speed = Math.max(Math.pow(multiplier, 1.4), 4);
       this.speed = speed;
       this.background.setSpeed(Math.min(speed, 6));
-      this.background.addObstacles(
-        this.app.screen.width,
-        this.thief.view.y,
-        false,
-      );
+      this.background.addObstacles(this.app.screen.width, false);
       this.cop.setSpeed(speed);
       this.thief.setSpeed(speed);
     });
 
     this.state.on("crashed", (rate: number) => {
       this.play = true;
-      this.background.addObstacles(
-        this.app.screen.width,
-        this.thief.view.y,
-        true,
-      );
+      this.background.addObstacles(this.app.screen.width, true);
       this.multiplierDisplay.crash(rate);
       //this.isJumping.value = true;
       //this.thief.idle();

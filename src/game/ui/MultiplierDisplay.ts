@@ -12,10 +12,7 @@ export class MultiplierDisplay {
 
   private isCrashed = false;
 
-  constructor(
-    private screenWidth: number,
-    private screenHeight: number,
-  ) {
+  constructor(screenWidth: number, screenHeight: number) {
     this.bg = new Graphics();
     this.glow = new Graphics();
 
