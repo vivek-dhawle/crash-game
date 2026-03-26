@@ -36,49 +36,85 @@ export class GameApp {
       },
       {
         alias: "jokerSkeleton",
-        src: "/assets/spine/joker/Joker-Animation.json",
+        src: `${import.meta.env.BASE_URL}/assets/spine/joker/Joker-Animation.json`,
       },
       {
         alias: "jokerAtlas",
-        src: "/assets/spine/joker/Joker-Animation.atlas",
+        src: `${import.meta.env.BASE_URL}/assets/spine/joker/Joker-Animation.atlas`,
       },
       {
         alias: "jokerCopSkeleton",
-        src: "/assets/spine/cop&joker/Cops-And-Joker.json",
+        src: `${import.meta.env.BASE_URL}/assets/spine/cop&joker/Cops-And-Joker.json`,
       },
       {
         alias: "jokerCopAtlas",
-        src: "/assets/spine/cop&joker/Cops-And-Joker.atlas",
+        src: `${import.meta.env.BASE_URL}/assets/spine/cop&joker/Cops-And-Joker.atlas`,
       },
       {
         alias: "copSkeleton",
-        src: "/assets/spine/cop/Cops-Animation.json",
+        src: `${import.meta.env.BASE_URL}/assets/spine/cop/Cops-Animation.json`,
       },
       {
         alias: "copAtlas",
-        src: "/assets/spine/cop/Cops-Animation.atlas",
+        src: `${import.meta.env.BASE_URL}/assets/spine/cop/Cops-Animation.atlas`,
       },
       {
         alias: "dustSkeleton",
-        src: "/assets/spine/dust/Dust-Particles.json",
+        src: `${import.meta.env.BASE_URL}/assets/spine/dust/Dust-Particles.json`,
       },
       {
         alias: "dustAtlas",
-        src: "/assets/spine/dust/Dust-Particles.atlas",
+        src: `${import.meta.env.BASE_URL}/assets/spine/dust/Dust-Particles.atlas`,
       },
 
-      { alias: "sky", src: "/assets/background/1_Skys.png" },
-      { alias: "moon", src: "/assets/background/2_Moon.png" },
-      { alias: "cityShilout", src: "/assets/background/3_CityShilout.png" },
-      { alias: "mainCity", src: "/assets/background/4_MainCity.png" },
-      { alias: "bridge", src: "/assets/background/5_Bridge.png" },
-      { alias: "obs1", src: "/assets/background/obstacles-01.png" },
-      { alias: "obs2", src: "/assets/background/obstacles-02.png" },
-      { alias: "obs3", src: "/assets/background/obs01.png" },
-      { alias: "obs4", src: "/assets/background/obs2.png" },
-      { alias: "obs5", src: "/assets/background/obs3.png" },
-      { alias: "obs6", src: "/assets/background/obs4.png" },
-      { alias: "obs7", src: "/assets/background/obs5.png" },
+      {
+        alias: "sky",
+        src: `${import.meta.env.BASE_URL}/assets/background/1_Skys.png`,
+      },
+      {
+        alias: "moon",
+        src: `${import.meta.env.BASE_URL}/assets/background/2_Moon.png`,
+      },
+      {
+        alias: "cityShilout",
+        src: `${import.meta.env.BASE_URL}/assets/background/3_CityShilout.png`,
+      },
+      {
+        alias: "mainCity",
+        src: `${import.meta.env.BASE_URL}/assets/background/4_MainCity.png`,
+      },
+      {
+        alias: "bridge",
+        src: `${import.meta.env.BASE_URL}/assets/background/5_Bridge.png`,
+      },
+      {
+        alias: "obs1",
+        src: `${import.meta.env.BASE_URL}/assets/background/obstacles-01.png`,
+      },
+      {
+        alias: "obs2",
+        src: `${import.meta.env.BASE_URL}/assets/background/obstacles-02.png`,
+      },
+      {
+        alias: "obs3",
+        src: `${import.meta.env.BASE_URL}/assets/background/obs01.png`,
+      },
+      {
+        alias: "obs4",
+        src: `${import.meta.env.BASE_URL}/assets/background/obs2.png`,
+      },
+      {
+        alias: "obs5",
+        src: `${import.meta.env.BASE_URL}/assets/background/obs3.png`,
+      },
+      {
+        alias: "obs6",
+        src: `${import.meta.env.BASE_URL}/assets/background/obs4.png`,
+      },
+      {
+        alias: "obs7",
+        src: `${import.meta.env.BASE_URL}/assets/background/obs5.png`,
+      },
     ]);
   }
 }
