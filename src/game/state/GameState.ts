@@ -15,6 +15,7 @@ type GameEvents = {
   multiplier: number;
   playCrash: void;
   crashed: number;
+  history: number[];
 };
 
 export class GameState {
@@ -22,6 +23,7 @@ export class GameState {
   multiplier = 1;
   status: RoundStatus = RoundStatus.WAITING;
   crashRate: number | null = null;
+  private history: number[] = [];
 
   private listeners: {
     [K in keyof GameEvents]?: ((payload: GameEvents[K]) => void)[];
@@ -133,7 +135,20 @@ export class GameState {
     this.crashRate = crashRate;
     this.multiplier = crashRate;
     this.status = RoundStatus.CRASHED;
+
+    this.history.unshift(crashRate);
+
+    if (this.history.length > 20) {
+      this.history.pop();
+    }
+
     this.emit("playCrash", undefined as void);
     this.emit("crashed", crashRate);
+
+    this.emit("history", [...this.history]);
+  }
+  setHistory(history: number[]) {
+    this.history = history.slice(0, 20);
+    this.emit("history", [...this.history]);
   }
 }

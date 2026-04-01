@@ -1,11 +1,11 @@
 export class ApiClient {
   // private BASE_URL = "http://14.96.243.218:8004/api/v1";
-  // private BASE_URL1 = "https://api-dev.grailbet.com/api/v1";
+  private BASE_URL1 = "https://api-dev.grailbet.com/api/v1";
   private env_url = import.meta.env.VITE_API_BASE_URL;
   constructor(private token: string | null) {}
 
   private async request<T>(path: string, options: RequestInit): Promise<T> {
-    const res = await fetch(`${this.env_url}${path}`, {
+    const res = await fetch(`${this.BASE_URL1}${path}`, {
       ...options,
       headers: {
         "Content-Type": "application/json",
@@ -37,6 +37,17 @@ export class ApiClient {
   cancelBet() {
     return this.request("/crash-game/cancel-bet-crash-game", {
       method: "POST",
+    });
+  }
+
+  getCrashHistory(limit = 20, offset = 0) {
+    return this.request<{
+      data: {
+        rows: { roundId: string; crashRate: number }[];
+        count: number;
+      };
+    }>(`/crash-game/get-crash-game-history?limit=${limit}&offset=${offset}`, {
+      method: "GET",
     });
   }
 }

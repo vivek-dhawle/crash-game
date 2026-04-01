@@ -14,6 +14,8 @@ export class GameApp {
       background: "#0f172a",
       //resizeTo: document.getElementById('pixi-container')!,
       antialias: true,
+      resolution: window.devicePixelRatio || 1,
+      autoDensity: true,
     });
 
     document.getElementById("pixi-container")!.appendChild(this.app.canvas);

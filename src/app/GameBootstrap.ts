@@ -14,12 +14,23 @@ export class GameBootstrap {
 
     await socket.connect();
 
-    // 🔥 Bind socket to state (single source of truth)
+    // 🔥 Bind socket to state
     state.bindSocket(socket);
+
+    // ✅ LOAD HISTORY HERE
+   
 
     // Start Pixi
     const app = new GameApp(state);
     await app.init();
+     try {
+      const res = await api.getCrashHistory(20, 0);
+      const history = res.data.rows.map((r) => r.crashRate);
+
+      state.setHistory(history.reverse());
+    } catch (e) {
+      console.error("Failed to load history", e);
+    }
 
     // Start HTML UI
     const betPanel = new BetPanelController(api, state);

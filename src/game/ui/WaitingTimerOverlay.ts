@@ -11,7 +11,7 @@ export class WaitingTimerOverlay {
   constructor(screenWidth: number, screenHeight: number) {
     this.circle = new Graphics();
     this.secondsText = new Text({
-      text: "0",
+      text: "10",
       style: {
         fill: 0xffffff,
         fontSize: 60,

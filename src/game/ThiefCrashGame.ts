@@ -7,6 +7,7 @@ import { WaitingTimerOverlay } from "./ui/WaitingTimerOverlay";
 import { MultiplierDisplay } from "./ui/MultiplierDisplay";
 import { Cop } from "./entities/Cop";
 import { CopThief } from "./entities/CopTthief";
+import { BetHistory } from "./ui/BetHistory";
 
 export class ThiefCrashGame {
   private background!: Background;
@@ -16,10 +17,12 @@ export class ThiefCrashGame {
   private loop!: GameLoop;
   private waitingTimer!: WaitingTimerOverlay;
   private multiplierDisplay!: MultiplierDisplay;
+  private betHistory!: BetHistory;
   private speed: number = 0.28;
   private isJumping: { value: boolean };
   private isCrash: { value: boolean };
   private play: boolean = true;
+  private isRunning: boolean = false;
   constructor(
     private app: Application,
     private state: GameState,
@@ -53,6 +56,11 @@ export class ThiefCrashGame {
     this.waitingTimer = new WaitingTimerOverlay(width, height);
     this.multiplierDisplay.view.zIndex = 110;
     this.waitingTimer.view.zIndex = 110;
+    this.betHistory = new BetHistory(this.state);
+    this.betHistory.resize(width, height/32);
+    this.betHistory.position.set(-10,10);
+    this.betHistory.scale.set(0.5);
+   
 
     this.app.stage.addChild(
       this.background.view,
@@ -62,6 +70,7 @@ export class ThiefCrashGame {
       this.waitingTimer.view,
       this.background.dust,
       //this.copTheif.view,
+      this.betHistory
     );
 
     this.loop = new GameLoop(this.app);
@@ -162,6 +171,7 @@ export class ThiefCrashGame {
     this.cop.view.y = height / 1.6;
     this.waitingTimer.resize(width, height);
     this.multiplierDisplay.resize(width, height);
+    this.betHistory.resize(width, height);
   };
 
   private update(delta: number) {
@@ -169,6 +179,11 @@ export class ThiefCrashGame {
       this.state.status === RoundStatus.WAITING &&
       Number(this.waitingTimer.secondsText.text) <= 5
     ) {
+      if (!this.isRunning) {
+        this.isRunning = true;
+        this.cop.run();
+        this.thief.run();
+      }
       this.background.setSpeed(2);
       this.cop.setSpeed(2);
       this.thief.setSpeed(2);
@@ -185,6 +200,11 @@ export class ThiefCrashGame {
       (this.state.status === RoundStatus.RUNNING ||
         this.state.status === RoundStatus.CRASHED)
     ) {
+      if (!this.isRunning) {
+        this.isRunning = true;
+        this.cop.run();
+        this.thief.run();
+      }
       this.background.update(delta);
       if (this.state.status === RoundStatus.RUNNING)
         this.cop.view.x -= this.speed * delta;
@@ -200,6 +220,7 @@ export class ThiefCrashGame {
         this.app.stage,
         () => {
           this.play = false;
+          this.isRunning = false;
         },
       );
     }
