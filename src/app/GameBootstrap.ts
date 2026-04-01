@@ -13,26 +13,42 @@ export class GameBootstrap {
     const state = new GameState();
 
     await socket.connect();
-
-    // 🔥 Bind socket to state
     state.bindSocket(socket);
 
-    // ✅ LOAD HISTORY HERE
-   
-
-    // Start Pixi
     const app = new GameApp(state);
     await app.init();
-     try {
-      const res = await api.getCrashHistory(20, 0);
-      const history = res.data.rows.map((r) => r.crashRate);
 
-      state.setHistory(history.reverse());
-    } catch (e) {
-      console.error("Failed to load history", e);
-    }
+    let isFetchingHistory = false;
 
-    // Start HTML UI
+    const loadHistory = async () => {
+      if (isFetchingHistory) return;
+
+      isFetchingHistory = true;
+
+      try {
+        const res = await api.getCrashHistory(20, 0);
+        const history = res.data.rows.map((r) => r.crashRate);
+
+        state.setHistory(history.reverse());
+      } catch (e) {
+        console.error("Failed to load history", e);
+      } finally {
+        isFetchingHistory = false;
+      }
+    };
+
+    await loadHistory();
+
+    let timeout: any;
+
+    state.on("crashed", () => {
+      clearTimeout(timeout);
+
+      timeout = setTimeout(() => {
+        loadHistory();
+      }, 300); 
+    });
+
     const betPanel = new BetPanelController(api, state);
     betPanel.init();
   }

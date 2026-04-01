@@ -136,19 +136,14 @@ export class GameState {
     this.multiplier = crashRate;
     this.status = RoundStatus.CRASHED;
 
-    this.history.unshift(crashRate);
-
     if (this.history.length > 20) {
       this.history.pop();
     }
-
     this.emit("playCrash", undefined as void);
     this.emit("crashed", crashRate);
-
-    this.emit("history", [...this.history]);
   }
   setHistory(history: number[]) {
     this.history = history.slice(0, 20);
-    this.emit("history", [...this.history]);
+    this.emit("history", [...this.history.reverse()]);
   }
 }
