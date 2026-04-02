@@ -4,6 +4,10 @@ import type { Thief } from "../entities/Thief";
 import type { CopThief } from "../entities/CopTthief";
 import { GameState } from "../state/GameState";
 
+type ObstacleSprite = Sprite & {
+  pos: "up" | "down";
+};
+
 export class Background {
   public view: Container;
 
@@ -15,7 +19,7 @@ export class Background {
   private mainCity!: TilingSprite;
   private bridge!: TilingSprite;
 
-  public Obstacle!: Sprite[];
+  public Obstacle!: ObstacleSprite[];
   private ObstacleSprite!: Texture[];
 
   public added = false;
@@ -141,7 +145,7 @@ export class Background {
     if (last && last.y >= this.landPosition && last.x > width * 0.75) return;
 
     const index = Math.floor(Math.random() * this.ObstacleSprite.length);
-    const obs = Sprite.from(this.ObstacleSprite[index]);
+    const obs = Sprite.from(this.ObstacleSprite[index]) as ObstacleSprite;
 
     obs.scale.set(0.3);
     obs.anchor.set(0, 1);

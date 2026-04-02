@@ -18,7 +18,14 @@ export class BetPanelController {
   private amountInput!: HTMLInputElement;
   private autoInput!: HTMLInputElement;
 
+  private popup!: HTMLDivElement;
+  private popupMultiplier!: HTMLElement;
+  private popupAmount!: HTMLElement;
+
   private betState: BetState = BetState.IDLE;
+
+  private isAutoCashingOut = false;
+  private currentMultiplier = 1;
 
   constructor(
     private api: ApiClient,
@@ -26,6 +33,7 @@ export class BetPanelController {
   ) {}
 
   init() {
+    // buttons
     this.placeBtn = document.getElementById(
       "place-bet-btn",
     ) as HTMLButtonElement;
@@ -42,12 +50,18 @@ export class BetPanelController {
       "cashout-btn",
     ) as HTMLButtonElement;
 
+    // inputs
     this.amountInput = document.getElementById(
       "bet-amount",
     ) as HTMLInputElement;
     this.autoInput = document.getElementById(
       "auto-cashout",
     ) as HTMLInputElement;
+
+    // popup
+    this.popup = document.getElementById("cashout-popup") as HTMLDivElement;
+    this.popupMultiplier = document.getElementById("cashout-multiplier")!;
+    this.popupAmount = document.getElementById("cashout-amount")!;
 
     this.attachEvents();
     this.attachStateListeners();
@@ -67,18 +81,24 @@ export class BetPanelController {
   }
 
   private attachStateListeners() {
+    // NEW ROUND
     this.state.on("waiting", async () => {
-      // auto place next round bet
+      this.isAutoCashingOut = false;
+      this.currentMultiplier = 1;
+
+      // reset cashout button
+      this.cashoutBtn.disabled = false;
+
       if (this.betState === BetState.NEXT_ROUND_PENDING) {
         await this.placeBet();
       }
+
       this.render();
     });
 
     this.state.on("running", () => this.render());
 
     this.state.on("crashed", () => {
-      // reset after round ends
       if (
         this.betState === BetState.ACTIVE ||
         this.betState === BetState.CASHED_OUT
@@ -89,10 +109,26 @@ export class BetPanelController {
     });
 
     this.state.on("hydrated", () => this.render());
+
+    // MULTIPLIER LISTENER
+    this.state.on("multiplier", (multiplier: number) => {
+      this.currentMultiplier = multiplier;
+
+      const auto = Number(this.autoInput.value);
+
+      if (
+        this.betState === BetState.ACTIVE &&
+        multiplier >= auto &&
+        !this.isAutoCashingOut
+      ) {
+        this.isAutoCashingOut = true;
+        this.handleAutoCashout();
+      }
+    });
   }
 
   // ------------------------------------------------
-  // SAFETY (block clicks when crashed)
+  // SAFETY
   // ------------------------------------------------
 
   private isBlocked() {
@@ -134,20 +170,45 @@ export class BetPanelController {
 
   private queueNext() {
     if (this.isBlocked()) return;
-
     this.betState = BetState.NEXT_ROUND_PENDING;
     this.render();
   }
 
   private cancelNext() {
     if (this.isBlocked()) return;
-
     this.betState = BetState.IDLE;
     this.render();
   }
 
+  // MANUAL CASHOUT
   private async cashout() {
     if (this.isBlocked()) return;
+    if (this.cashoutBtn.disabled) return;
+
+    const multiplier = this.currentMultiplier;
+
+    // instant UI feedback
+    this.showCashout(multiplier);
+
+    try {
+      this.cashoutBtn.disabled = true;
+
+      await this.api.cashOut();
+
+      this.betState = BetState.CASHED_OUT;
+    } catch {
+      //do nothing
+    }
+
+    this.render();
+  }
+
+  // AUTO CASHOUT
+  private async handleAutoCashout() {
+    const multiplier = this.currentMultiplier;
+
+    // instant UI feedback
+    this.showCashout(multiplier);
 
     try {
       await this.api.cashOut();
@@ -157,6 +218,37 @@ export class BetPanelController {
     }
 
     this.render();
+  }
+
+  // ------------------------------------------------
+  // POPUP (TOP TOAST)
+  // ------------------------------------------------
+
+  private showCashout(multiplier: number) {
+    const betAmount = Number(this.amountInput.value);
+    const winAmount = betAmount * multiplier;
+
+    this.popupMultiplier.textContent = `${multiplier.toFixed(2)}x`;
+    this.popupAmount.textContent = `$${winAmount.toFixed(2)}`;
+
+    // reset animation
+    this.popup.classList.remove("hidden");
+    this.popup.classList.remove("animate-slideUp", "animate-slideDown");
+
+    void this.popup.offsetWidth;
+
+    // show
+    this.popup.classList.add("animate-slideDown");
+
+    // 🔥 STAY LONGER (4s instead of 2s)
+    setTimeout(() => {
+      this.popup.classList.remove("animate-slideDown");
+      this.popup.classList.add("animate-slideUp");
+
+      setTimeout(() => {
+        this.popup.classList.add("hidden");
+      }, 350);
+    }, 4000); // ⬅️ increased duration
   }
 
   // ------------------------------------------------
@@ -204,7 +296,7 @@ export class BetPanelController {
       return;
     }
 
-    // 🔴 CRASHED → everything disabled
+    // CRASHED
     if (round === RoundStatus.CRASHED) {
       if (this.betState === BetState.NEXT_ROUND_PENDING) {
         this.cancelNextBtn.classList.remove("hidden");
@@ -216,7 +308,7 @@ export class BetPanelController {
       return;
     }
 
-    // 🟡 WAITING
+    // WAITING
     if (round === RoundStatus.WAITING) {
       if (this.betState === BetState.ACTIVE) {
         this.cancelBtn.classList.remove("hidden");
@@ -226,27 +318,23 @@ export class BetPanelController {
       return;
     }
 
-    // 🟢 RUNNING
+    // RUNNING
     if (round === RoundStatus.RUNNING) {
-      // ✅ Active bet → cashout
       if (this.betState === BetState.ACTIVE) {
         this.cashoutBtn.classList.remove("hidden");
         return;
       }
 
-      // ✅ Cashed out → next round actions
       if (this.betState === BetState.CASHED_OUT) {
         this.placeNextBtn.classList.remove("hidden");
         return;
       }
 
-      // ✅ Already queued next round
       if (this.betState === BetState.NEXT_ROUND_PENDING) {
         this.cancelNextBtn.classList.remove("hidden");
         return;
       }
 
-      // ✅ NEW: No bet placed → allow place next round
       if (this.betState === BetState.IDLE) {
         this.placeNextBtn.classList.remove("hidden");
         return;

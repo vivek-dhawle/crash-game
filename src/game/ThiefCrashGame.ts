@@ -63,6 +63,7 @@ export class ThiefCrashGame {
 
     this.multiplierDisplay = new MultiplierDisplay(width, height);
     this.waitingTimer = new WaitingTimerOverlay(width, height);
+
     this.multiplierDisplay.view.zIndex = 110;
     this.waitingTimer.view.zIndex = 110;
 

@@ -29,14 +29,6 @@ export class GameApp {
   private async loadAssets() {
     await Assets.load([
       {
-        alias: "spineSkeleton",
-        src: "https://raw.githubusercontent.com/pixijs/spine-v8/main/examples/assets/spineboy-pro.skel",
-      },
-      {
-        alias: "spineAtlas",
-        src: "https://raw.githubusercontent.com/pixijs/spine-v8/main/examples/assets/spineboy-pma.atlas",
-      },
-      {
         alias: "jokerSkeleton",
         src: "/assets/spine/joker/Joker-Animation.json",
       },

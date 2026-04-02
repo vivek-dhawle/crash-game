@@ -39,10 +39,8 @@ export class GameBootstrap {
 
     await loadHistory();
 
-
     state.on("crashed", () => {
-   
-        loadHistory();
+      loadHistory();
     });
 
     const betPanel = new BetPanelController(api, state);

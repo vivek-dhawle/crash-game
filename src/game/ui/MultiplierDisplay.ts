@@ -116,6 +116,6 @@ export class MultiplierDisplay {
 
   resize(width: number, height: number) {
     this.view.x = width / 2 - this.boxWidth / 2;
-    this.view.y = height / 10;
+    this.view.y = height / 5;
   }
 }

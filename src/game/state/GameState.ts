@@ -142,8 +142,9 @@ export class GameState {
     this.emit("playCrash", undefined as void);
     this.emit("crashed", crashRate);
   }
+
   setHistory(history: number[]) {
     this.history = history.slice(0, 20);
-    this.emit("history", [...this.history.reverse()]);
+    this.emit("history", [...this.history].reverse());
   }
 }
