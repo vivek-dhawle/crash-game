@@ -14,18 +14,26 @@ export class Background {
   private city!: TilingSprite;
   private mainCity!: TilingSprite;
   private bridge!: TilingSprite;
+
   public Obstacle!: Sprite[];
   private ObstacleSprite!: Texture[];
+
   public added = false;
+  public landPosition = 0;
 
   public dust!: Spine;
 
   private speed = 0;
 
+  // ✅ IMPORTANT
+  private prevWidth: number;
+
   constructor(width: number, height: number) {
     this.view = new Container();
     this.backgroundContainer = new Container();
     this.Obstacle = [];
+
+    this.prevWidth = width; // ✅ store width
 
     this.create(width, height);
   }
@@ -46,6 +54,7 @@ export class Background {
     const cityTexture = Texture.from("cityShilout");
     const mainCityTexture = Texture.from("mainCity");
     const bridgeTexture = Texture.from("bridge");
+
     this.ObstacleSprite = [
       Texture.from("obs3"),
       Texture.from("obs5"),
@@ -56,17 +65,18 @@ export class Background {
       skeleton: "dustSkeleton",
       atlas: "dustAtlas",
     });
+
     this.dust.label = "dust";
-    this.dust.x = width;
+    //this.dust.pivot.set(this.dust.width / 2, this.dust.height/2);
+    this.dust.x = width / 2;
     this.dust.y = height;
+    this.dust.width = width;
+    this.dust.height = height;
     this.dust.zIndex = 101;
+    //this.dust.state.setAnimation(0, "animation", true);
     this.dust.visible = false;
 
-    // this.obs1.anchor.set(0.5);
-    // this.obs1.scale.set(0.7);
-    // this.obs2.anchor.set(0.5);
-    // this.obs2.scale.set(0.7);
-
+    // CITY LAYERS
     this.city = new TilingSprite({
       texture: cityTexture,
       width,
@@ -88,7 +98,9 @@ export class Background {
     });
     this.bridge.y = height - bridgeTexture.height;
 
-    // Add background layers into container
+    this.landPosition = this.bridge.y + this.bridge.height * 0.63;
+
+    // BACKGROUND CONTAINER
     this.backgroundContainer.addChild(
       this.sky,
       this.moon,
@@ -96,14 +108,12 @@ export class Background {
       this.mainCity,
     );
 
-    // Apply blur ONLY to background container
     const blur = new BlurFilter();
-    blur.blur = 4; // strength
-    blur.quality = 2; // performance vs smoothness
+    blur.blur = 4;
+    blur.quality = 2;
 
     this.backgroundContainer.filters = [blur];
 
-    // Final hierarchy
     this.view.addChild(this.backgroundContainer, this.bridge);
   }
 
@@ -115,6 +125,7 @@ export class Background {
     this.bridge.tilePosition.x -= baseSpeed * 1.0;
 
     this.moon.x -= baseSpeed * 0.02;
+    if (this.moon.x < -60) this.moon.x = this.prevWidth + 100;
   }
 
   public setSpeed(value: number) {
@@ -123,25 +134,31 @@ export class Background {
 
   public addObstacles(width: number, collision: boolean) {
     const last = this.Obstacle[this.Obstacle.length - 1];
-    const yLocation = [320, 380];
 
-    if (last && last.y == 380 && last.x > width - 300) return;
+    // ✅ FIXED
+    const yLocation = [this.landPosition - 60, this.landPosition + 10];
+
+    if (last && last.y >= this.landPosition && last.x > width * 0.75) return;
+
     const index = Math.floor(Math.random() * this.ObstacleSprite.length);
     const obs = Sprite.from(this.ObstacleSprite[index]);
-    if (index == 9) {
-      obs.scale.set(0.3);
-    } else {
-      obs.scale.set(0.3);
-    }
+
+    obs.scale.set(0.3);
     obs.anchor.set(0, 1);
     obs.label = "obs";
 
-    obs.y = yLocation[Math.floor(Math.random() * this.ObstacleSprite.length)];
-    obs.x = width + 150;
-    if (collision) obs.y = 380;
+    // ✅ FIXED random
+    const yIndex = Math.floor(Math.random() * yLocation.length);
+    obs.y = yLocation[yIndex];
+
+    obs.x = width * 1.5;
+
+    if (collision) obs.y = this.landPosition;
+
+    // ✅ FIXED pos logic
+    obs.pos = yIndex === 0 ? "up" : "down";
 
     this.view.addChild(obs);
-
     this.Obstacle.push(obs);
   }
 
@@ -156,10 +173,11 @@ export class Background {
   ) {
     this.Obstacle.forEach((obs) => {
       obs.x -= speed;
+
       const dist = state.status === "RUNNING" ? 60 + speed * 10 : 20;
 
       if (
-        obs.y >= 370 &&
+        obs.y >= this.landPosition - 20 &&
         !isJumping.value &&
         obs.x - thief.view.x < dist &&
         obs.x - thief.view.x > 0.1
@@ -171,6 +189,7 @@ export class Background {
           if (!container.getChildByLabel("copTheif")) {
             container.removeChild(thief.view);
             container.addChild(copTheif.view);
+
             const entry = copTheif.dive();
             entry.listener = {
               complete: () => {
@@ -178,13 +197,16 @@ export class Background {
                   this.dust.visible = true;
                   this.dust.state.setAnimation(0, "animation", false);
                   this.added = true;
+
                   onComplete();
+
                   setTimeout(() => {
                     copTheif.catch();
                   }, 300);
                 }
               },
             };
+
             copTheif.view.x = thief.view.x;
           }
         }
@@ -193,92 +215,38 @@ export class Background {
   }
 
   public resize(width: number, height: number) {
+    const scaleX = width / this.prevWidth;
+
     this.sky.width = width;
-    this.sky.height = height;
 
     this.city.width = width;
     this.mainCity.width = width;
     this.bridge.width = width;
+    this.dust.x = width / 2;
+    this.dust.y = height;
+    this.dust.width = width;
+    this.dust.height = height;
 
-    this.city.y = height - this.city.height;
+    this.city.y =
+      height - this.city.height < 0
+        ? height - this.city.height * -1
+        : height - this.city.height;
+
     this.mainCity.y = height - this.mainCity.height - 250;
     this.bridge.y = height - this.bridge.height;
 
+    this.landPosition = this.bridge.y + this.bridge.height * 0.63;
+
     this.moon.position.set(width - 200, height * 0.15);
+
+    // ✅ SCALE + FIX Y
+    this.Obstacle.forEach((obs) => {
+      obs.x *= scaleX;
+
+      if (obs.pos === "up") obs.y = this.landPosition - 60;
+      else obs.y = this.landPosition;
+    });
+
+    this.prevWidth = width;
   }
 }
-
-// import { Container, Sprite, Texture, TilingSprite } from 'pixi.js';
-
-// export class Background {
-//   public view: Container;
-//   public sky: Sprite;
-//   public background: TilingSprite;
-//   public midground: TilingSprite;
-//   public platform: TilingSprite;
-//   public floorHeight: number;
-//   public scale: number;
-
-//   constructor(width: number, height: number) {
-//     this.view = new Container();
-
-//     // SKY
-//     this.sky = Sprite.from('sky');
-//     this.sky.anchor.set(0, 1);
-//     this.sky.width = width;
-//     this.sky.height = height;
-
-//     // TEXTURES
-//     const backgroundTexture = Texture.from('background');
-//     const midgroundTexture = Texture.from('midground');
-//     const platformTexture = Texture.from('platform');
-
-//     const maxPlatformHeight = platformTexture.height;
-//     const platformHeight = Math.max(maxPlatformHeight, height * 0.4);
-
-//     const scale = (this.scale = platformHeight / maxPlatformHeight);
-
-//     const baseOptions = {
-//       tileScale: { x: scale, y: scale },
-//       anchor: { x: 0, y: 1 },
-//       applyAnchorToTexture: true,
-//     };
-
-//     // BACKGROUND
-//     this.background = new TilingSprite({
-//       texture: backgroundTexture,
-//       width,
-//       height: backgroundTexture.height * scale,
-//       ...baseOptions,
-//     });
-
-//     // MIDGROUND
-//     this.midground = new TilingSprite({
-//       texture: midgroundTexture,
-//       width,
-//       height: midgroundTexture.height * scale,
-//       ...baseOptions,
-//     });
-
-//     // PLATFORM
-//     this.platform = new TilingSprite({
-//       texture: platformTexture,
-//       width,
-//       height: platformHeight,
-//       ...baseOptions,
-//     });
-
-//     this.floorHeight = platformHeight * 0.43;
-
-//     // Position the backdrop layers.
-//     this.background.y = this.midground.y = -this.floorHeight;
-
-//     this.view.addChild(this.sky, this.background, this.midground, this.platform);
-//   }
-
-//   scroll(speed: number) {
-//     this.background.tilePosition.x -= speed * 0.1;
-//     this.midground.tilePosition.x -= speed * 0.25;
-//     this.platform.tilePosition.x -= speed;
-//   }
-// }

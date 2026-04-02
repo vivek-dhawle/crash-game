@@ -10,7 +10,7 @@ export class SocketClient {
 
   async connect() {
     const env_url = import.meta.env.VITE_SOCKET_URL;
-    const grail_url='https://cron-dev.grailbet.com'
+    const grail_url = "https://cron-dev.grailbet.com";
 
     this.socket = io(`${grail_url}/crash-game`, {
       path: "/api/socket",

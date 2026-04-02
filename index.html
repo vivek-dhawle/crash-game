@@ -8,98 +8,114 @@
   </head>
 
   <body class="h-full text-white overflow-hidden">
-    <div id="app" class="h-full w-full flex flex-col">
-    
+    <div id="app" class="h-full w-full relative">
 
-      <!-- MAIN -->
-      <div class="flex-1 flex flex-col-reverse lg:flex-row overflow-hidden">
-        <!-- BET PANEL -->
-        <div
-          class="w-full lg:w-[280px] xl:w-[280px] bg-gradient-to-b from-[#0c1633] to-[#081027] border-t lg:border-t-0 lg:border-r border-blue-500/20 backdrop-blur-xl"
-        >
-          <div class="p-5">
-            <div class="bg-[#0a132a] rounded-2xl p-5 shadow-lg shadow-blue-900/40 border border-blue-500/20">
-              <h2 class="text-blue-400 text-sm tracking-wide mb-4">PLACE BET</h2>
+      <!-- GAME CANVAS -->
+      <div class="absolute inset-0 bg-[#0f172a] flex items-center justify-center">
+        <div id="pixi-container" class="w-full h-full"></div>
+      </div>
 
-              <!-- BET AMOUNT -->
-              <div class="mb-4">
-                <label class="text-xs text-gray-400">Bet Amount</label>
-                <div class="mt-2 flex items-center bg-[#060d1d] rounded-xl border border-blue-500/30 px-3 py-3">
-                  <span class="text-gray-400 mr-2">$</span>
-                  <input
-                    id="bet-amount"
-                    type="number"
-                    value="1"
-                    class="w-full bg-transparent outline-none text-lg font-semibold text-white"
-                  />
-                </div>
+      <!-- FLOATING BET PANEL -->
+      <div class="pointer-events-none absolute inset-0">
+
+        <!-- POSITION -->
+        <div class="
+          pointer-events-auto absolute
+          left-1/2 -translate-x-1/2
+          bottom-4
+          w-full max-w-[380px]
+
+          lg:left-4 lg:translate-x-0
+          lg:top-4 lg:bottom-auto
+          lg:w-[280px]
+        ">
+
+          <!-- PANEL -->
+          <div class="
+            flex flex-row items-end gap-3
+            lg:flex-col lg:items-stretch
+
+            justify-between
+            rounded-2xl
+            p-4 lg:p-5
+
+            backdrop-blur-2xl
+            bg-white/10 border border-white/20
+            shadow-[0_20px_60px_rgba(0,0,0,0.45)]
+
+            transition-all duration-300
+          ">
+
+            <!-- TITLE (desktop only) -->
+            <h2 class="hidden lg:block text-blue-300 text-sm tracking-wide mb-4">
+              PLACE BET
+            </h2>
+
+            <!-- BET AMOUNT -->
+            <div class="flex flex-col lg:flex-col">
+              <label class="text-sm lg:text-xs text-gray-300 mb-1">
+                Bet Amount
+              </label>
+              <div class="flex items-center bg-white/5 border border-white/10 rounded-xl px-3 py-3">
+                <span class="text-gray-400 text-base mr-1">$</span>
+                <input
+                  id="bet-amount"
+                  type="number"
+                  value="1"
+                  class="w-16 lg:w-full bg-transparent outline-none text-base lg:text-lg font-semibold text-white"
+                />
               </div>
-
-              <!-- AUTO CASHOUT -->
-              <div class="mb-5">
-                <label class="text-xs text-gray-400">Auto Cashout (x)</label>
-                <div class="mt-2 flex items-center bg-[#060d1d] rounded-xl border border-blue-500/30 px-3 py-3">
-                  <input
-                    id="auto-cashout"
-                    type="number"
-                    step="0.01"
-                    value="2.00"
-                    class="w-full bg-transparent outline-none text-lg font-semibold text-cyan-400"
-                  />
-                  <span class="text-gray-400 ml-2">x</span>
-                </div>
-              </div>
-
-              <!-- BUTTONS -->
-
-              <!-- Place Bet -->
-              <button
-                id="place-bet-btn"
-                class="w-full py-3 rounded-xl font-semibold text-lg transition bg-gradient-to-r from-blue-500 to-cyan-500 hover:scale-[1.02]"
-              >
-                Place Bet
-              </button>
-
-              <!-- Cancel Bet -->
-              <button
-                id="cancel-bet-btn"
-                class="w-full py-3 rounded-xl font-semibold text-lg transition bg-gradient-to-r from-red-500 to-pink-500 hover:scale-[1.02] hidden"
-              >
-                Cancel Bet
-              </button>
-
-              <!-- Place Next Round -->
-              <button
-                id="place-next-btn"
-                class="w-full py-3 rounded-xl font-semibold text-lg transition bg-gradient-to-r from-blue-500 to-cyan-500 hover:scale-[1.02] hidden"
-              >
-                Place Bet Next Round
-              </button>
-
-              <!-- Cancel Next Round -->
-              <button
-                id="cancel-next-btn"
-                class="w-full py-3 rounded-xl font-semibold text-lg transition bg-gradient-to-r from-red-500 to-pink-500 hover:scale-[1.02] hidden"
-              >
-                Cancel Next Round
-              </button>
-
-              <!-- Cashout -->
-              <button
-                id="cashout-btn"
-                class="w-full py-3 rounded-xl font-semibold text-lg transition bg-gradient-to-r from-green-500 to-emerald-400 hover:scale-[1.02] hidden"
-              >
-                Cash Out
-              </button>
             </div>
+
+            <!-- AUTO CASHOUT -->
+            <div class="flex flex-col lg:flex-col">
+              <label class="text-sm lg:text-xs text-gray-300 mb-1">
+                Auto Cashout
+              </label>
+              <div class="flex items-center bg-white/5 border border-white/10 rounded-xl px-3 py-3">
+                <input
+                  id="auto-cashout"
+                  type="number"
+                  step="0.01"
+                  value="2.00"
+                  class="w-16 lg:w-full bg-transparent outline-none text-base lg:text-lg font-semibold text-cyan-300"
+                />
+                <span class="text-gray-400 text-sm ml-1">x</span>
+              </div>
+            </div>
+
+            <!-- BUTTONS -->
+            <button
+              id="place-bet-btn"
+              class="px-4 py-3 lg:w-full rounded-xl font-semibold text-base lg:text-lg
+                     bg-gradient-to-r from-blue-500 to-cyan-400
+                     shadow-lg shadow-cyan-500/30"
+            >
+              Bet
+            </button>
+
+            <button
+              id="cashout-btn"
+              class="px-4 py-3 lg:w-full rounded-xl font-semibold text-base lg:text-lg hidden
+                     bg-gradient-to-r from-green-400 to-emerald-500
+                     shadow-lg shadow-green-500/30"
+            >
+              Cash
+            </button>
+
+            <button
+              id="cancel-bet-btn"
+              class="px-4 py-3 lg:w-full rounded-xl font-semibold text-base lg:text-lg hidden
+                     bg-gradient-to-r from-red-500 to-pink-500
+                     shadow-lg shadow-red-500/30"
+            >
+              Cancel
+            </button>
+
           </div>
         </div>
-
-        <!-- GAME CANVAS -->
-        <div class="flex-1 min-h-0 relative bg-[#0f172a] flex items-center justify-center">
-          <div id="pixi-container" class="w-full h-full"></div>
-        </div>
       </div>
+
     </div>
 
     <script type="module" src="/src/app/index.ts"></script>

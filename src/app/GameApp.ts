@@ -12,7 +12,7 @@ export class GameApp {
 
     await this.app.init({
       background: "#0f172a",
-      //resizeTo: document.getElementById('pixi-container')!,
+      resizeTo: document.getElementById("pixi-container")!,
       antialias: true,
       resolution: window.devicePixelRatio || 1,
       autoDensity: true,

@@ -39,14 +39,10 @@ export class GameBootstrap {
 
     await loadHistory();
 
-    let timeout: any;
 
     state.on("crashed", () => {
-      clearTimeout(timeout);
-
-      timeout = setTimeout(() => {
+   
         loadHistory();
-      }, 300); 
     });
 
     const betPanel = new BetPanelController(api, state);

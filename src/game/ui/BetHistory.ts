@@ -2,7 +2,7 @@ import { Graphics, Container, Text } from "pixi.js";
 import { GameState } from "../state/GameState";
 
 export class BetHistory extends Container {
-  private bg!: Graphics;
+  //private bg!: Graphics;
   private items: Text[] = [];
 
   private panelHeight = 0;
@@ -21,11 +21,11 @@ export class BetHistory extends Container {
   }
 
   private initEvents() {
-  this.state.on("history", (history: number[]) => {
-    this.lastHistory = [...history];
-    this.renderHistory(history);
-  });
-}
+    this.state.on("history", (history: number[]) => {
+      this.lastHistory = [...history];
+      this.renderHistory(history);
+    });
+  }
   private getColor(value: number) {
     if (value < 2) {
       return 0x072a66; // ultra dark blue
@@ -97,7 +97,7 @@ export class BetHistory extends Container {
         } else {
           // ⭐ EXISTING ITEMS SMOOTH PUSH
 
-          const targetX = x;
+          //const targetX = x;
 
           pill.x = x - 30; // start slightly left
           txt.x = pill.x + pillW / 2 - txt.width / 2;
@@ -118,8 +118,6 @@ export class BetHistory extends Container {
 
   private layout(width?: number, height?: number) {
     if (!width || !height) return;
-
-   
   }
 
   public resize(width: number, height: number) {
