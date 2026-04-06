@@ -9,11 +9,45 @@
 
   <body class="h-full text-white overflow-hidden">
     <div id="app" class="h-full w-full relative">
+      
       <!-- GAME CANVAS -->
       <div
         class="absolute inset-0 bg-[#0f172a] flex items-center justify-center"
       >
-        <div id="pixi-container" class="w-full h-full"></div>
+        <div id="pixi-container" class="w-full h-full">
+          <div
+            id="loading-screen"
+            class="fixed inset-0 bg-black flex flex-col items-center justify-center gap-5 z-[9999]"
+          >
+            <!-- TITLE -->
+            <h1
+              class="text-white text-3xl tracking-[4px] font-bold"
+              style="font-family: 'Montserrat-b', sans-serif"
+            >
+              TRUEIGTECH
+            </h1>
+
+            <!-- PROGRESS BAR -->
+            <div class="w-[300px] h-[30px] bg-[#222] rounded-[20px] overflow-hidden">
+              <div
+                id="loading-bar"
+                class="h-full w-0 bg-gradient-to-r from-cyan-400 to-blue-600 transition-all duration-200"
+              ></div>
+            </div>
+
+            <!-- TEXT -->
+            <p
+              id="loading-text"
+              class="text-gray-400 text-[41px] font-bold"
+              style="font-family: 'Montserrat-b', sans-serif"
+            >
+              0%
+            </p>
+
+            
+          </div>
+          
+        </div>
       </div>
 
       <!-- FLOATING BET PANEL -->

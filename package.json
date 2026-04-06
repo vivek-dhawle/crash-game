@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@esotericsoftware/spine-pixi-v8": "^4.2.101",
+    "@pixi/sound": "^6.0.1",
     "@tailwindcss/vite": "^4.1.18",
     "gsap": "^3.14.2",
     "pixi.js": "^8.8.1",

@@ -3,7 +3,7 @@ import { Container, Sprite, Texture, TilingSprite, BlurFilter } from "pixi.js";
 import type { Thief } from "../entities/Thief";
 import type { CopThief } from "../entities/CopTthief";
 import { GameState } from "../state/GameState";
-
+import { sound } from "@pixi/sound";
 type ObstacleSprite = Sprite & {
   pos: "up" | "down";
 };
@@ -188,9 +188,11 @@ export class Background {
       ) {
         if (state.status === "RUNNING") {
           thief.jump(speed, isJumping);
+          sound.play("jumpSound");
           isJumping.value = true;
         } else {
           if (!container.getChildByLabel("copTheif")) {
+            sound.play("fallSound");
             container.removeChild(thief.view);
             container.addChild(copTheif.view);
 

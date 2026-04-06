@@ -8,6 +8,8 @@ import { MultiplierDisplay } from "./ui/MultiplierDisplay";
 import { Cop } from "./entities/Cop";
 import { CopThief } from "./entities/CopTthief";
 import { BetHistory } from "./ui/BetHistory";
+import { sound } from "@pixi/sound";
+import { IMediaInstance } from "@pixi/sound";
 
 export class ThiefCrashGame {
   private background!: Background;
@@ -24,8 +26,8 @@ export class ThiefCrashGame {
   private isCrash: { value: boolean };
   private play: boolean = true;
   private isRunning: boolean = false;
+  private bgSound: IMediaInstance | null = null;
 
-  // ✅ IMPORTANT: store previous width
   private prevWidth: number;
 
   constructor(
@@ -89,8 +91,28 @@ export class ThiefCrashGame {
     this.app.renderer.on("resize", this.handleResize);
   }
 
+  private async playBgMusic() {
+    // if already playing → do nothing
+    if (this.bgSound && !this.bgSound.paused) return;
+
+    const instance = await sound.play("bgMusic", {
+      volume: 0.5,
+      loop: true,
+    });
+
+    this.bgSound = instance;
+  }
+
+  private stopBgMusic() {
+    if (this.bgSound) {
+      this.bgSound.stop();
+      this.bgSound = null;
+    }
+  }
+
   private registerStateListeners() {
     this.state.on("hydrated", () => {
+      this.playBgMusic();
       if (this.state.status === RoundStatus.RUNNING) {
         this.multiplierDisplay.show();
       }
@@ -101,6 +123,8 @@ export class ThiefCrashGame {
     });
 
     this.state.on("roundStarted", () => {
+      sound.stop("fallSound");
+      this.stopBgMusic();
       this.app.stage.removeChild(this.copTheif.view);
       this.app.stage.addChild(this.thief.view);
       this.app.stage.addChild(this.cop.view);
@@ -129,6 +153,8 @@ export class ThiefCrashGame {
     });
 
     this.state.on("waiting", (seconds: number | undefined) => {
+      sound.play("countSound");
+      this.multiplierDisplay.hide();
       this.waitingTimer.show();
 
       if (seconds !== undefined) {
@@ -136,6 +162,7 @@ export class ThiefCrashGame {
         if (seconds == 5) {
           this.thief.run();
           this.cop.run();
+          this.playBgMusic();
         }
       }
     });
@@ -170,19 +197,15 @@ export class ThiefCrashGame {
     });
   }
 
-  // ✅ FULL FIXED RESIZE
   private handleResize = (width: number, height: number) => {
     const scaleX = width / this.prevWidth;
 
-    // ✅ SCALE positions instead of resetting
     this.thief.view.x *= scaleX;
     this.cop.view.x *= scaleX;
     this.copTheif.view.x *= scaleX;
 
-    // Background handles obstacles internally
     this.background.resize(width, height);
 
-    // Y depends on ground
     this.thief.view.y = this.background.landPosition;
     this.cop.view.y = this.background.landPosition;
     this.copTheif.view.y = this.background.landPosition;
@@ -191,7 +214,6 @@ export class ThiefCrashGame {
     this.multiplierDisplay.resize(width, height);
     this.betHistory.resize(width, height / 32);
 
-    // ✅ update width
     this.prevWidth = width;
   };
 
