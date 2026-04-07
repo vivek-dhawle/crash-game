@@ -17,18 +17,27 @@
         <div id="pixi-container" class="w-full h-full">
           <div
             id="loading-screen"
-            class="fixed inset-0 bg-black flex flex-col items-center justify-center gap-5 z-[9999]"
+            class="fixed inset-0 bg-black flex flex-col items-center justify-center gap-5 z-[9999] cursor-pointer"
           >
             <!-- TITLE -->
-            <h1
-              class="text-white text-3xl tracking-[4px] font-bold"
-              style="font-family: 'Montserrat-b', sans-serif"
-            >
-              TRUEIGTECH
-            </h1>
+            <!-- TITLE WITH LOGO -->
+<div class="flex items-center gap-3">
+  <img 
+    src="/assets/favicon.png" 
+    alt="logo" 
+    class="w-10 h-10 object-contain"
+  />
+
+  <h1
+    class="text-white text-3xl tracking-[4px] font-bold"
+    style="font-family: 'Montserrat-b', sans-serif"
+  >
+    TRUEIGTECH
+  </h1>
+</div>
 
             <!-- PROGRESS BAR -->
-            <div class="w-[300px] h-[30px] bg-[#222] rounded-[20px] overflow-hidden">
+            <div class="w-[550px] h-[30px] bg-[#222] rounded-[20px] overflow-hidden">
               <div
                 id="loading-bar"
                 class="h-full w-0 bg-gradient-to-r from-cyan-400 to-blue-600 transition-all duration-200"
